@@ -15,27 +15,26 @@ template <typename T> T gcd(T a, T b) { return a == 0 ? b : gcd((b % a), a); }
 template <typename T> T lcm(T a, T b) { return a * b / gcd(a, b); }
 //------------------------------------------------------------------------------
 
-vi graph[MX];
-bool vis[MX];
+const int N = 2000;
+vi graph[N + 2];
+bool vis[N + 2];
 
 void dfs(int n) {
     vis[n] = 1;
-    for (int i = 0; i < graph[n].size(); ++i) {
-        int next = graph[n][i];
-        if (vis[next] == 0) dfs(next);
-    }
+    for (auto i : graph[n]) if(!vis[i]) dfs(i);
 }
 
 void solve() {
-    int n, destiny;
-    cin >> n >> destiny;
-    for (int i = 1, temp; i < n; ++i) {
-        cin >> temp;
-        graph[i].pb(temp + i);
+    int n, m, a, b;
+    cin >> n >> m >> a >> b;
+    memset(vis, false, sizeof(vis));
+    for (int i = 1, a, b; i <= m; ++i) {
+        cin >> a >> b;
+        graph[a].pb(b);
+        graph[b].pb(a);
     }
-
-    dfs(1);
-    cout << (vis[destiny] ? "YES" : "NO") << endl;
+    dfs(a);
+    cout << (vis[b] ? "GO SHAHIR!" :  "NO SHAHIR!") << endl;
 }
 
 int main() {
