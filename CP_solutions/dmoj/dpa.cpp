@@ -4,6 +4,7 @@ using namespace chrono;
 #define fastio() ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
 //---typedef--------------------------------------------------------------------
 typedef long long ll;
+typedef long long unsigned llu;
 typedef vector<int> vi;
 typedef vector<vector<int>> vvi;
 //---alias----------------------------------------------------------------------
@@ -16,31 +17,26 @@ template <typename T> T lcm(T a, T b) { return a * b / gcd(a, b); }
 //------------------------------------------------------------------------------
 
 void solve() {
-    int n; cin >> n;
-    int l[n + 1]; for (int i = 0; i < n + 1; ++i) cin >> l[i];
-    int w[n]; for (int i = 0; i < n; ++i) cin >> w[i];
+    int n; cin >> n; 
+    int arr[n];
+    int dp[n];
+    fill (dp, dp + n, inf);
 
-    double area = 0;
-    for (int i = 0; i < n; ++i) {
-        area += (double) abs(l[i + 1] - l[i]) * w[i] / 2;
-        area += min(l[i + 1], l[i]) * w[i];
+    for (int i = 0; i < n; ++i) cin >> arr[i];
+
+    dp[0] = 0;
+    dp[1] = abs(arr[1] - arr[0]);
+    for (int i = 2; i < n; ++i) {
+        int dis1 = abs(arr[i - 1] - arr[i]) + dp[i - 1];
+        int dis2 = abs(arr[i - 2] - arr[i]) + dp[i - 2];
+        dp[i] = min(dp[i], dis1);
+        dp[i] = min(dp[i], dis2);
     }
 
-    printf("%.1f", area);
+    cout << dp[n - 1] << endl;
 }
 
 int main() {
-#ifndef ONLINE_JUDGE
-    freopen("Input.txt", "r", stdin);
-    freopen("Output.txt", "w", stdout);
-    freopen("Error.txt", "w", stderr);
-#endif
-    auto start = steady_clock::now();
     fastio();
     solve();
-    auto end = steady_clock::now();
-#ifndef TIMER
-    double elapsed_time = double (duration_cast <nanoseconds> (end-start).count());
-    cerr << "Time elapsed(s): " << elapsed_time / 1e9;
-#endif
 }

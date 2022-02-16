@@ -16,60 +16,64 @@ template <typename T> T gcd(T a, T b) { return a == 0 ? b : gcd((b % a), a); }
 template <typename T> T lcm(T a, T b) { return a * b / gcd(a, b); }
 //------------------------------------------------------------------------------
 
-int n;
-vi p, w, d;
+const int N = 200000 + 5;
+vi graph[N];
+int p[N], s[N];
+bool vis[N];
+multiset<int> sum;
 
-ll move(int pos) { // Takes pos of concert and return walking time for friends
-    ll time = 0;
-    for (int i = 0; i < n; ++i) { // each friend
-        int ls = p[i] - d[i]; // left and right hearing range
-        int rs = p[i] + d[i];
+void bfs(int n) {
+    queue<int> q;
+    q.push(n);
 
-        // Check base cases (if friends can already hear it)
-        if (pos >= ls && pos <= rs) {
-            continue;
+    while (!q.empty()) {
+        int o = q.front(); q.pop();
+        for (auto i : graph[o]) {
+            if (vis[i]) continue;
+            vis[i] = 1;
+            p[i] = p[o] + 1;
+            q.push(i);
         }
-
-        int close = rs;
-        if (abs(pos - ls) < abs(pos - rs)) {
-            close = ls;
-        }
-
-        time += (ll) w[i] * abs(pos - close);
     }
-    return time;
 }
 
 void solve() {
-    cin >> n;
-    p.resize(n); w.resize(n); d.resize(n);
-    int l = INT_MAX, r = INT_MIN;
-
-    for (int i = 0; i < n; ++i) {
-        cin >> p[i] >> w[i] >> d[i];
-        l = min(l, p[i]);
-        r = max(r, p[i]);
+    int n, w, d; cin >> n >> w >> d;
+    
+    for (int i = 0, a, b; i < w; ++i) {
+        cin >> a >> b;
+        graph[b].pb(a);
     }
 
-    // ternary search
-    // algorithm to find the min of a function without using derivatives
-    ll best = 1e18;
-    for (int i = 0; i < 60; ++i) {
-        int delta = (r - l) / 3;
-        int m1 = l + delta;
-        int m2 = r - delta;
-        ll t1 = move(m1);
-        ll t2 = move(m2);
-        best = min(t1, best);
-        best = min(t2, best);
-        if (t1 > t2) {
-            l = m1;
-        }
-        else {
-            r = m2;
-        }
+    fill(p, p + n, inf);
+    p[n] = 0;
+
+    memset(vis, 0, sizeof(vis));
+    vis[n] = 1;
+
+    bfs(n);
+
+    for (int i = 1; i <= n; ++i) {
+        cin >> s[i];
+        sum.insert(i - 1 + p[s[i]]);
     }
-    cout << best << endl;
+
+    for (int i = 0; i < d; ++i) {
+        int s1, s2; cin >> s1 >> s2;
+
+        int s1PrevDist = s1 - 1 + p[s[s1]];
+        int s2PrevDist = s2 - 1 + p[s[s2]];
+
+        sum.erase(sum.find(s1PrevDist));
+        sum.erase(sum.find(s2PrevDist));
+
+        swap(s[s1], s[s2]);
+
+        sum.insert(s1 - 1 + p[s[s1]]);
+        sum.insert(s2 - 1 + p[s[s2]]);
+
+        cout << *sum.begin() << endl;
+    }
 }
 
 int main() {

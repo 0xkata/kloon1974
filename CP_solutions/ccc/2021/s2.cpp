@@ -8,7 +8,7 @@ typedef vector<int> vi;
 typedef vector<vector<int>> vvi;
 //---alias----------------------------------------------------------------------
 #define endl "\n"
-#define MX 100010
+#define inf 0x3f3f3f3f
 #define pb(a) push_back(a)
 //---macros------------------------------------------ --------------------------
 template <typename T> T gcd(T a, T b) { return a == 0 ? b : gcd((b % a), a); }
