@@ -13,32 +13,35 @@ typedef vector<vector<int>> vvi;
 //---macros------------------------------------------ --------------------------
 template <typename T> T gcd(T a, T b) { return a == 0 ? b : gcd((b % a), a); }
 template <typename T> T lcm(T a, T b) { return a * b / gcd(a, b); }
-#define google() int t; cin >> t; int i = 1; while (t--) { cout << "Case #" << i << ":"; solve(); i++; }
 //------------------------------------------------------------------------------
 
-bool isPrime(int n) {
-    for (int i = 2; i <= sqrt(n); ++i) {
-        if (n % i == 0) return false;
+void solve() {
+    int n; cin >> n;
+    int arr[n]; for (int i = 0; i < n; ++i) cin >> arr[i];
+
+    int cnt = 0, index = 1;
+    for (int i = 0; i < n; ++i) {
+        cnt = 0;
+        for (int j = 0; j <= i; ++j) {
+            if (arr[j] > index) cnt++;
+            if (cnt > index) index++;
+        }
+        cout << index << " ";
     }
-    return true;
+    cout << endl;
 }
 
-void solve() {
+void google() {
     int t; cin >> t;
-
+    int i = 1;
     while (t--) {
-        int n; cin >> n;
-        bool flag = 1;
-        for (int i = 1; i < n && flag; ++i) {
-            if (isPrime(n + i) && isPrime(n - i)) {
-                cout << n - i << " " << n + i << endl;
-                flag = 0;
-            }
-        }
+        cout << "Case #" << i << ": ";
+        solve();
+        i++;
     }
 }
 
 int main() {
     fastio();
-    solve();
+    google();
 }
